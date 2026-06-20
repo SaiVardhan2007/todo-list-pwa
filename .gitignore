@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Build outputs
+client/dist/
+dist/
+
+# OS metadata
+.DS_Store
+Thumbs.db
