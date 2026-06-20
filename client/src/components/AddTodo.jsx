@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import DatePicker from './DatePicker';
 import TimePicker from './TimePicker';
-import { formatDate } from '../utils/time';
 
 export default function AddTodo({ onAdd, onClose }) {
   const [title, setTitle] = useState('');

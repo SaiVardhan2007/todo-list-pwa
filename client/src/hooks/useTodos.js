@@ -40,7 +40,10 @@ export function useTodos() {
   }, []);
 
   useEffect(() => {
-    loadTodos();
+    const timer = setTimeout(() => {
+      loadTodos();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [loadTodos]);
 
   const addTodo = async (todoData) => {

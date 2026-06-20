@@ -1,6 +1,6 @@
 import { formatDate, formatTime, formatRelativeCreated, isOverdue } from '../utils/time';
 
-export default function TodoDetail({ todo, onDelete, onEdit }) {
+export default function TodoDetail({ todo, onDelete }) {
   return (
     <div className="todo-detail">
       <div className="todo-detail__row">

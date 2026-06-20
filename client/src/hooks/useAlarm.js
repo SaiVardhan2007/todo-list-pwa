@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-export function useAlarm(todos, removeTodo) {
+export function useAlarm(todos) {
   const [activeAlarm, setActiveAlarm] = useState(null);
   const firedRef = useRef(new Set());
 
@@ -31,12 +31,17 @@ export function useAlarm(todos, removeTodo) {
         break;
       }
     }
-  }, [todos, removeTodo]);
+  }, [todos]);
 
   useEffect(() => {
-    checkAlarms();
+    const timer = setTimeout(() => {
+      checkAlarms();
+    }, 0);
     const interval = setInterval(checkAlarms, 15000);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [checkAlarms]);
 
   const dismissAlarm = useCallback(() => {

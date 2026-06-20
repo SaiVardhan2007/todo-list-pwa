@@ -12,7 +12,7 @@ function App() {
   const [showAdd, setShowAdd] = useState(false);
   const [tab, setTab] = useState('active'); // 'active' | 'completed'
   const { todos, loading, error, isOffline, addTodo, toggleTodo, removeTodo, editTodo } = useTodos();
-  const { activeAlarm, dismissAlarm, snoozeAlarm } = useAlarm(todos, removeTodo);
+  const { activeAlarm, dismissAlarm, snoozeAlarm } = useAlarm(todos);
   const { canInstall, handleInstall } = useInstallPrompt();
 
   const activeTodos = todos.filter((t) => !t.completed);

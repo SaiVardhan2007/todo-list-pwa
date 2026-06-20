@@ -59,7 +59,7 @@ export default function TimePicker({ value, onChange, onClose }) {
       const idx = Math.round(angle / 30) % 12;
       setMinute(MINUTES[idx]);
     }
-  }, [mode, getAngleFromEvent]);
+  }, [mode, getAngleFromEvent, setHour, setMinute]);
 
   const handlePointerDown = (e) => {
     dragging.current = true;
