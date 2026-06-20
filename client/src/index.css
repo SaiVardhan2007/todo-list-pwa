@@ -224,6 +224,71 @@ select {
   box-shadow: var(--shadow-glow);
 }
 
+/* ── Tabs ── */
+.tabs {
+  position: relative;
+  display: flex;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  margin-bottom: var(--space-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.tabs__btn {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 2;
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.tabs__btn--active {
+  color: var(--text-primary);
+}
+
+.tabs__count {
+  background: rgba(232, 168, 124, 0.15);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.tabs__btn--active .tabs__count {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.tabs__indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  width: calc(50% - 4px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  z-index: 1;
+  transition: transform var(--duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
 /* ── Todo List ── */
 .todo-list {
   display: flex;
