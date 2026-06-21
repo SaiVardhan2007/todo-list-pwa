@@ -4,11 +4,12 @@ const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
 
-export default function DatePicker({ value, onChange }) {
+export default function DatePicker({ value, onChange, onClose }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const selected = value ? new Date(value + 'T00:00:00') : null;
+  const [selectedDate, setSelectedDate] = useState(value);
+  const selected = selectedDate ? new Date(selectedDate + 'T00:00:00') : null;
 
   const [viewYear, setViewYear] = useState(selected?.getFullYear() || today.getFullYear());
   const [viewMonth, setViewMonth] = useState(selected?.getMonth() ?? today.getMonth());
@@ -66,8 +67,13 @@ export default function DatePicker({ value, onChange }) {
   function selectDay(day) {
     const d = new Date(viewYear, viewMonth, day);
     if (d < today) return;
-    onChange(toStr(d));
+    setSelectedDate(toStr(d));
   }
+
+  const handleConfirm = () => {
+    onChange(selectedDate);
+    onClose();
+  };
 
   const canGoPrev = viewYear > today.getFullYear() || viewMonth > today.getMonth();
 
@@ -92,57 +98,71 @@ export default function DatePicker({ value, onChange }) {
   }
 
   return (
-    <div className="dp">
-      {/* Quick select */}
-      <div className="dp__quick">
-        <button
-          type="button"
-          className={`dp__chip ${value === toStr(today) ? 'dp__chip--active' : ''}`}
-          onClick={() => onChange(toStr(today))}
-        >Today</button>
-        <button
-          type="button"
-          className={`dp__chip ${value === toStr(tomorrow) ? 'dp__chip--active' : ''}`}
-          onClick={() => onChange(toStr(tomorrow))}
-        >Tomorrow</button>
-        <button
-          type="button"
-          className={`dp__chip ${value === toStr(nextWeek) ? 'dp__chip--active' : ''}`}
-          onClick={() => onChange(toStr(nextWeek))}
-        >Next week</button>
-        {value && (
-          <button
-            type="button"
-            className="dp__chip dp__chip--clear"
-            onClick={() => onChange('')}
-          >✕ Clear</button>
-        )}
-      </div>
+    <div className="dp-overlay" onClick={onClose}>
+      <div className="dp" onClick={(e) => e.stopPropagation()}>
+        <div className="dp__body">
+          {/* Quick select */}
+          <div className="dp__quick">
+            <button
+              type="button"
+              className={`dp__chip ${selectedDate === toStr(today) ? 'dp__chip--active' : ''}`}
+              onClick={() => setSelectedDate(toStr(today))}
+            >Today</button>
+            <button
+              type="button"
+              className={`dp__chip ${selectedDate === toStr(tomorrow) ? 'dp__chip--active' : ''}`}
+              onClick={() => setSelectedDate(toStr(tomorrow))}
+            >Tomorrow</button>
+            <button
+              type="button"
+              className={`dp__chip ${selectedDate === toStr(nextWeek) ? 'dp__chip--active' : ''}`}
+              onClick={() => setSelectedDate(toStr(nextWeek))}
+            >Next week</button>
+            {selectedDate && (
+              <button
+                type="button"
+                className="dp__chip dp__chip--clear"
+                onClick={() => setSelectedDate('')}
+              >✕ Clear</button>
+            )}
+          </div>
 
-      {/* Month nav */}
-      <div className="dp__nav">
-        <button
-          type="button"
-          className="dp__nav-btn"
-          onClick={prevMonth}
-          disabled={!canGoPrev}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <span className="dp__month-label">
-          {MONTHS[viewMonth]} {viewYear}
-        </span>
-        <button type="button" className="dp__nav-btn" onClick={nextMonth}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </button>
-      </div>
+          {/* Month nav */}
+          <div className="dp__nav">
+            <button
+              type="button"
+              className="dp__nav-btn"
+              onClick={prevMonth}
+              disabled={!canGoPrev}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span className="dp__month-label">
+              {MONTHS[viewMonth]} {viewYear}
+            </span>
+            <button type="button" className="dp__nav-btn" onClick={nextMonth}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+            </button>
+          </div>
 
-      {/* Day headers */}
-      <div className="dp__grid">
-        {DAYS.map((d) => (
-          <div key={d} className="dp__cell dp__cell--header">{d}</div>
-        ))}
-        {cells}
+          {/* Day headers and cells */}
+          <div className="dp__grid">
+            {DAYS.map((d) => (
+              <div key={d} className="dp__cell dp__cell--header">{d}</div>
+            ))}
+            {cells}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="dp__actions">
+          <button className="tp__btn tp__btn--cancel" onClick={onClose} type="button">
+            Cancel
+          </button>
+          <button className="tp__btn tp__btn--ok" onClick={handleConfirm} type="button">
+            OK
+          </button>
+        </div>
       </div>
     </div>
   );

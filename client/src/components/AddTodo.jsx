@@ -8,6 +8,7 @@ export default function AddTodo({ onAdd, onClose }) {
   const [time, setTime] = useState('');
   const [alarmType, setAlarmType] = useState(null);
   const [snoozeDuration, setSnoozeDuration] = useState(5);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -50,6 +51,25 @@ export default function AddTodo({ onAdd, onClose }) {
     return `${h12}:${String(mm).padStart(2, '0')} ${period}`;
   }
 
+  function formatDateDisplay(dStr) {
+    if (!dStr) return null;
+    const [year, month, day] = dStr.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (d.toDateString() === now.toDateString()) return 'Today';
+    if (d.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+
+    return d.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+    });
+  }
+
   const SNOOZE_OPTIONS = [1, 2, 3, 5, 10, 15, 30];
 
   return (
@@ -81,10 +101,23 @@ export default function AddTodo({ onAdd, onClose }) {
             />
           </div>
 
-          {/* Date Picker */}
+          {/* Date Selector */}
           <div className="form__group">
             <label className="form__label">When? (optional)</label>
-            <DatePicker value={date} onChange={setDate} />
+            <button
+              type="button"
+              className="form__time-btn"
+              onClick={() => setShowDatePicker(true)}
+              id="todo-date-btn"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              {date ? formatDateDisplay(date) : 'Set date (default: No reminder)'}
+            </button>
           </div>
 
           {/* Time selector — only if date is set */}
@@ -165,6 +198,21 @@ export default function AddTodo({ onAdd, onClose }) {
             {submitting ? 'Adding...' : 'Add Reminder'}
           </button>
         </form>
+
+        {/* Date Picker Overlay */}
+        {showDatePicker && (
+          <DatePicker
+            value={date}
+            onChange={(val) => {
+              setDate(val);
+              if (!val) {
+                setTime('');
+                setAlarmType(null);
+              }
+            }}
+            onClose={() => setShowDatePicker(false)}
+          />
+        )}
 
         {/* Time Picker Overlay */}
         {showTimePicker && (
