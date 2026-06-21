@@ -12,8 +12,12 @@ const PORT = process.env.PORT || 5005;
 connectDB();
 
 // Middleware
+const clientUrl = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.replace(/\/$/, '') 
+  : 'http://localhost:5173';
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: [clientUrl, `${clientUrl}/`, 'http://localhost:5173', 'http://localhost:5173/'],
   credentials: true,
 }));
 app.use(express.json());
