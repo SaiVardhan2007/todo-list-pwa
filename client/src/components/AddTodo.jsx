@@ -17,13 +17,18 @@ export default function AddTodo({ onAdd, onClose }) {
 
     setSubmitting(true);
 
-    let reminderDate = null;
-    if (date) {
-      const dateTime = time ? `${date}T${time}` : `${date}T09:00`;
-      reminderDate = new Date(dateTime).toISOString();
-    }
-
     try {
+      let reminderDate = null;
+      if (date) {
+        const [year, month, day] = date.split('-').map(Number);
+        const [hour, minute] = (time || '09:00').split(':').map(Number);
+        const d = new Date(year, month - 1, day, hour, minute, 0, 0);
+        if (isNaN(d.getTime())) {
+          throw new Error('Invalid Date');
+        }
+        reminderDate = d.toISOString();
+      }
+
       await onAdd({
         title: title.trim(),
         reminderDate,
@@ -31,7 +36,8 @@ export default function AddTodo({ onAdd, onClose }) {
         snoozeDuration: (date && alarmType === 'snooze') ? snoozeDuration : null,
       });
       onClose();
-    } catch {
+    } catch (err) {
+      console.error('Failed to add reminder:', err);
       setSubmitting(false);
     }
   };
