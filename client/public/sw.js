@@ -1,4 +1,4 @@
-const CACHE_NAME = 'remdo-v2';
+const CACHE_NAME = 'remdo-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
